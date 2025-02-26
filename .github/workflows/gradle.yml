@@ -9,8 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      ANDROID_SDK_ROOT: ${{ runner.tool_cache }}/android/sdk
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -21,14 +20,14 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
 
-      - name: Install Android SDK components
-        run: |
-          # Обновляем SDK и принимаем лицензии
-          yes | sdkmanager --licenses
-          sdkmanager "platforms;android-33" "build-tools;33.0.0"
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          sdk-version: "33.0.2"
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace --info
+        run: ./gradlew assembleDebug --info
+
